@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+service Server{
+    //Get params
+    rpc GetParams (StateMessage) returns (Parameters) {}
+    //Set params
+    rpc SetParams (RequestChange) returns (StateMessage) {}
+    //init params
+    rpc InitParams (Parameters) returns (StateMessage) {}
+}
+
+message StateMessage{
+    string status = 1;
+}
+message Range{
+    int32 begin = 1;
+    int32 end = 2;
+}
+
+message Parameters{
+    repeated float params = 1;
+}
+
+message RequestChange{
+    int32 begin = 1;
+    int32 end = 2;
+    repeated float thetas = 3;
+}
+
+
+service Master{
+    //add Worker
+    rpc AddWorker (NodeInfo) returns (StateMessage) {}
+    //add Server
+    rpc AddServer (NodeInfo) returns (StateMessage) {}
+    //finshed job
+    rpc FinishJob (NodeInfo) returns (StateMessage) {}
+
+}
+
+message NodeInfo{
+    string ip = 1;
+    int32 port = 2;
+}
+
+service Worker{
+    //set data range
+    rpc SetDataRange (Range) returns (StateMessage) {}
+    //set params range
+    rpc SetParamsRange (Range) returns (StateMessage) {}
+    //start work
+    rpc StartWork (StateMessage) returns (StateMessage) {}
+    //set saram location
+    rpc SetParamsLocation (ParamsLocations) returns (StateMessage) {}
+}
+
+message ParamsLocations{
+    repeated ParamsLocation params_location_list = 1;
+}
+message ParamsLocation{
+    string ip = 1;
+    int32 port = 2;
+    int32 begin = 3;
+    int32 end = 4;
+}
